@@ -8,7 +8,7 @@ let http = require('http');
 let https = require('https');
 let fs = require('fs');
 
-let mongo = require('mongodb').MongoClient;
+let Mongo = require('mongodb').MongoClient;
 let ObjectID = require('mongodb').ObjectID;
 
 
@@ -48,7 +48,20 @@ http.createServer((req, res)=>{
     res.end();
 }).listen(80);
 
+// noinspection JSIgnoredPromiseFromCall
+Mongo.connect(dbURL, {useUnifiedTopology: true}, (err, db)=>{
+    if(err) {
+        console.log("****** ERROR ******\n");
+        throw err;
+    }else {
+        console.log( "------  CONNECTED ------\n");
 
-app.get('/', (req, res)=>{
-    res.render('index.ejs');
+        app.get('/', (req, res) => {
+            res.render('index.ejs');
+        });
+
+        app.get('/*', (req, res)=>{
+            res.render('error.ejs')
+        })
+    }
 });
